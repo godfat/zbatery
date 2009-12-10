@@ -6,7 +6,6 @@ GIT_URL = git://git.bogomips.org/zbatery.git
 
 GIT-VERSION-FILE: .FORCE-GIT-VERSION-FILE
 	@./GIT-VERSION-GEN
-RUBY = ruby
 -include GIT-VERSION-FILE
 -include local.mk
 ifeq ($(DLEXT),) # "so" for Linux
@@ -59,18 +58,20 @@ NEWS: GIT-VERSION-FILE
 	$(RAKE) -s news_rdoc > $@+
 	mv $@+ $@
 
-SINCE = 0.5.0
+SINCE =
 ChangeLog: LOG_VERSION = \
   $(shell git rev-parse -q "$(GIT_VERSION)" >/dev/null 2>&1 && \
           echo $(GIT_VERSION) || git describe)
+ifneq ($(SINCE),)
 ChangeLog: log_range = v$(SINCE)..$(LOG_VERSION)
+endif
 ChangeLog: GIT-VERSION-FILE
 	@echo "ChangeLog from $(GIT_URL) ($(log_range))" > $@+
 	@echo >> $@+
 	git log $(log_range) | sed -e 's/^/    /' >> $@+
 	mv $@+ $@
 
-news_atom := http://zbatery.bogomips.org.org/NEWS.atom.xml
+news_atom := http://zbatery.bogomip.org/NEWS.atom.xml
 cgit_atom := http://git.bogomips.org/cgit/zbatery.git/atom/?h=master
 atom = <link rel="alternate" title="Atom feed" href="$(1)" \
              type="application/atom+xml"/>
@@ -94,11 +95,6 @@ doc: .document NEWS ChangeLog
 	  doc/NEWS.html doc/README.html
 	$(RAKE) -s news_atom > doc/NEWS.atom.xml
 	cd doc && ln README.html tmp && mv tmp index.html
-	$(MAKE) -C Documentation comparison.html
-	$(RUBY) -i -p -e \
-	  '$$_.gsub!(/INCLUDE/){File.read("Documentation/comparison.html")}' \
-	  doc/Summary.html
-	cat Documentation/comparison.css >> doc/rdoc.css
 	$(RM) $(man1_bins)
 
 ifneq ($(VERSION),)

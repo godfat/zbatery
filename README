@@ -1,0 +1,130 @@
+= Zbatery: Rack HTTP server without a fork stuck in it
+
+Zbatery is an HTTP server for Rack applications on systems that either
+do not support fork(), or have no memory (nor need) to run the
+master/worker model.  It is based on Rainbows! (which is based on
+Unicorn (which is based on Mongrel)) and inherits parts of each.
+Zbatery supports your choice of all the thread/fiber/event/actor-based
+concurrency models and Rack middleware that Rainbows! supports (or will
+ever support) in a single process.
+
+Zbatery will still exploit certain features of Unix for transparent
+upgrades, log reopening, and graceful stops, but does not rely on them
+for basic functionality.
+
+== Features
+
+* Designed for {Rack}[http://rack.rubyforge.org/], the standard for
+  modern Ruby HTTP applications.
+
+* Configuration files are compatible with Rainbows!, a superset
+  of the Unicorn
+  {DSL}[http://unicorn.bogomips.org/Unicorn/Configurator.html].
+
+* Inherits all features and concurrency models Rainbows! supports
+  (and ever will support): http://rainbows.rubyforge.org/Summary.html
+
+* -Untested- Works under operating systems that don't support signals,
+  pipe and fork().  Unicorn 0.95.2+ has rake-compiler support, so
+  compiling the HTTP parser should be easier at least.
+
+* -Untested- HTML 5 Web Sockets support
+
+== License
+
+Zbatery is copyright 2009 by all contributors (see logs in git).
+It is ultimately based on Mongrel and carries the same license.
+
+Mongrel is copyright 2007 Zed A. Shaw and contributors. It is licensed
+under the Ruby license and the GPL2. See the included LICENSE file for
+details.
+
+Zbatery is 100% Free Software.
+
+== Install
+
+You may download the tarball from the Rainbows project page on Rubyforge
+and run setup.rb after unpacking it:
+
+http://rubyforge.org/frs/?group_id=8977
+
+You may also install it via RubyGems on Gemcutter:
+
+  gem install zbatery
+
+== Usage
+
+=== for Rack applications
+
+In APP_ROOT (where config.ru is located), run:
+
+  zbatery
+
+Zbatery will bind to all interfaces on TCP port 8080 by default.
+
+=== Configuration File(s)
+
+Zbatery will look for the config.ru file used by rackup in APP_ROOT.
+
+For deployments, it can use a config file for Unicorn and
+Rainbows!-specific options specified by the +--config-file/-c+
+command-line switch.  Zbatery accepts all options found in
+{Unicorn::Configurator}[http://unicorn.bogomips.org/Unicorn/Configurator.html]
+as well as the "Rainbows!" block, so you can have the following in your
+config file:
+
+    Rainbows! do
+      use :FiberSpawn
+      worker_connections 400
+    end
+
+See the Rainbows! configuration
+{documentation}[http://rainbows.rubyforge.org/Rainbows.html#M000001]
+for more details.
+
+== Disclaimer
+
+There is NO WARRANTY whatsoever if anything goes wrong, but let us know
+and we'll try our best to fix it.
+
+This project may be temporary and may eventually have its name encoded
+with uncrackable ROT13 encryption leaving you with no way to upgrade.
+
+== Development
+
+Most of the work is done in Rainbows!, Zbatery is just a shim to
+allow access to Rainbows! without requiring fork() or signals.
+
+You can get the latest source via git from the following locations:
+
+  git://git.bogomips.org/zbatery.git
+  git://repo.or.cz/zbatery.git (mirror)
+
+You may browse the code from the web and download the latest snapshot
+tarballs here:
+
+* http://git.bogomips.org/cgit/zbatery.git (cgit)
+* http://repo.or.cz/w/zbatery.git (gitweb)
+
+Inline patches (from "git format-patch") to the mailing list are
+preferred because they allow code review and comments in the reply to
+the patch.
+
+We will adhere to mostly the same conventions for patch submissions as
+git itself.  See the Documentation/SubmittingPatches document
+distributed with git on on patch submission guidelines to follow.  Just
+don't email the git mailing list or maintainer with Zbatery patches.
+
+== Tests
+
+There currently are no tests specific to Zbatery.  Keep in mind that
+Zbatery is only a small shim to drive Rainbows! (and Unicorn)
+underneath.  Rainbows! and Unicorn both have extensive (but very
+UNIX-specific) test suites.
+
+== Contact
+
+All feedback (bug reports, user/development dicussion, patches, pull
+requests) go to the mailing list/newsgroup.  We are currently
+borrowing the Rainbows! mailing list since most of our code (and
+problems) are related to Rainbows! mailto:rainbows-talk@rubyforge.org.

@@ -3,7 +3,21 @@ require 'rainbows'
 
 module Zbatery
 
-  # check if our Ruby implementation supports unlinked files
+  # current version of Zbatery
+  VERSION = "0.0.0"
+
+  class << self
+
+    # runs the Zbatery HttpServer with +app+ and +options+ and does
+    # not return until the server has exited.
+    def run(app, options = {})
+      HttpServer.new(app, options).start.join
+    end
+  end
+
+  Rainbows::Const::RACK_DEFAULTS["SERVER_SOFTWARE"] = "Zbatery #{VERSION}"
+
+  # true if our Ruby implementation supports unlinked files
   UnlinkedIO = begin
     tmp = Unicorn::Util.tmpio
     tmp.chmod(0)
@@ -17,15 +31,6 @@ module Zbatery
   # {before,after}_fork hooks found in Unicorn/Rainbows!
   # config files...
   FORK_HOOK = lambda { |_,_| }
-
-  class << self
-
-    # runs the Rainbows! HttpServer with +app+ and +options+ and does
-    # not return until the server has exited.
-    def run(app, options = {})
-      HttpServer.new(app, options).start.join
-    end
-  end
 
   class HttpServer < Rainbows::HttpServer
 
