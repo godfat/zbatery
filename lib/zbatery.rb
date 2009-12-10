@@ -75,8 +75,9 @@ module Zbatery
         trap(:HUP) { reexec; stop }
 
         # technically feasible in some cases, just not sanely supportable:
-        trap(:TTIN) { logger.info "SIGTTIN is not handled by Zbatery" }
-        trap(:TTOU) { logger.info "SIGTTOU is not handled by Zbatery" }
+        %w(TTIN TTOU WINCH).each do |sig|
+          trap(sig) { logger.info "SIG#{sig} is not handled by Zbatery" }
+        end
       rescue => e # hopefully ignores errors on Win32...
         logger.error "failed to setup signal handler: #{e.message}"
       end
