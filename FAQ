@@ -1,0 +1,42 @@
+= Frequently Asked Questions about Zbatery
+
+Be sure to check out the Rainbows!
+{FAQ}[http://rainbows.rubyforge.org/FAQ.html] and the Unicorn
+{FAQ}[http://unicorn.bogomips.org/FAQ.html] as well.
+
+
+=== Mongrel -> Unicorn -> Rainbows! -> Zbatery.  Why another server?
+
+Not everybody can afford to run a master process or multiple worker
+processes.  Nor do they need all the Unix signals support from
+Rainbows!/Unicorn.  We hope this is actually a temporary project that
+can eventually be folded back into Mongrel.
+
+
+=== Why not stick to Mongrel?
+
+Unfortunately Mongrel 2.x development has stalled and the majority of
+the team is busy with other projects.  However, Unicorn and Rainbows!
+development continues with less concern for portability.
+
+Rainbows! is the only Ruby web server we know of that supports a wide
+variety of concurrency models, so we decided to take advantage of
+the options Rainbows! provides instead of being tied to one.
+
+
+=== What's Rack?  Do you support Rails?
+
+{Rack}[http://rack.rubyforge.org/] is a minimal specification between
+Ruby web servers (e.g. Mongrel, Zbatery) and Ruby web frameworks (e.g.
+Rails, Sinatra, Camping).  Instead of requiring a new handler for every
+framework a server wants to support, web servers only need to support
+Rack.  As of late 2009, all major Ruby web frameworks are built on top
+of Rack, including Rails.
+
+
+=== What platforms are supported?
+
+Any platform running matz's Ruby 1.8 or 1.9 should work with Zbatery.
+We have not tested on anything other than GNU/Linux and FreeBSD, so
+please let us know of your success/failure stories.  Rubinius 1.0.0rc1
+appears to work, too (if you're using Unicorn 0.95.2 or later).

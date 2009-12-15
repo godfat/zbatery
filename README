@@ -28,7 +28,9 @@ for basic functionality.
   pipe and fork().  Unicorn 0.95.2+ has rake-compiler support, so
   compiling the HTTP parser should be easier at least.
 
-* -Untested- HTML 5 Web Sockets support
+* Web Sockets support (via
+  {Sunshowers}[http://rainbows.rubyforge.org/sunshowers/]), requires
+  Rainbows! 0.9.0+
 
 == License
 
@@ -44,13 +46,17 @@ Zbatery is 100% Free Software.
 == Install
 
 You may download the tarball from the Rainbows project page on Rubyforge
-and run setup.rb after unpacking it:
+and run setup.rb after unpacking it (and installing Unicorn and Rainbows!):
 
 http://rubyforge.org/frs/?group_id=8977
 
 You may also install it via RubyGems on Gemcutter:
 
   gem install zbatery
+
+Zbatery depends on Rainbows!, and in turn, Unicorn.  Despite Unicorn and
+Rainbows! being Unix-only, the Unicorn HTTP parser C extension should
+build on non-Unix-like systems (unverified).
 
 == Usage
 
