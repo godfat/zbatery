@@ -34,6 +34,11 @@ module Zbatery
 
   class HttpServer < Rainbows::HttpServer
 
+    # this class is only used to avoid breaking Unicorn user switching
+    class DeadIO
+      def chown(*args); end
+    end
+
     # only used if no concurrency model is specified
     def worker_loop(worker)
       init_worker_process(worker)
@@ -86,7 +91,7 @@ module Zbatery
       rescue => e # hopefully ignores errors on Win32...
         logger.error "failed to setup signal handler: #{e.message}"
       end
-      worker = Worker.new(0, $stdout)
+      worker = Worker.new(0, DeadIO.new)
       before_fork.call(self, worker)
       worker_loop(worker) # runs forever
     end
