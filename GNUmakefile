@@ -151,7 +151,7 @@ package: $(pkgtgz) $(pkggem)
 release: verify package $(release_notes) $(release_changes)
 	# make tgz release on RubyForge
 	rubyforge add_release -f -n $(release_notes) -a $(release_changes) \
-	  $(rfproject) $(rfpackage) $(VERSION) $(pkggem)
+	  $(rfproject) $(rfpackage) $(VERSION) $(pkgtgz)
 	# push gem to Gemcutter
 	gem push $(pkggem)
 	# in case of gem downloads from RubyForge releases page
