@@ -49,7 +49,11 @@ Gem::Specification.new do |s|
   #   eventmachine
   #   espace-neverblock + eventmachine
   #   async_sinatra + sinatra + eventmachine
-  s.add_dependency(%q<rainbows>, [">= 0.8.0", "<= 1.0.0"])
+  #
+  # rainbows 0.90.2 depends on unicorn 0.96.1,
+  # unicorn 0.96.0 and before had a memory leak
+  # that was only triggered in Rainbows!/Zbatery
+  s.add_dependency(%q<rainbows>, [">= 0.90.2", "<= 1.0.0"])
 
   # s.licenses = %w(GPLv2 Ruby) # accessor not compatible with older RubyGems
 end
