@@ -54,7 +54,7 @@ Gem::Specification.new do |s|
   # unicorn 0.96.0 and before had a memory leak
   # that was only triggered in Rainbows!/Zbatery
   s.add_dependency(%q<unicorn>, ["~> 0.97.0"])
-  s.add_dependency(%q<rainbows>, [">= 0.90.2", "<= 1.0.0"])
+  s.add_dependency(%q<rainbows>, [">= 0.91.0", "<= 1.0.0"])
 
   # s.licenses = %w(GPLv2 Ruby) # accessor not compatible with older RubyGems
 end
