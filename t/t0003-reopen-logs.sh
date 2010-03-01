@@ -44,9 +44,9 @@ t_begin "wait for rotated log to reappear" && {
 	done
 }
 
-t_begin "wait for worker to reopen logs" && {
+t_begin "wait to reopen logs" && {
 	nr=60
-	re="worker=.* done reopening logs"
+	re="done reopening logs"
 	while ! grep "$re" < $r_err >/dev/null && test $nr -ge 0
 	do
 		sleep 1
