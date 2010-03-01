@@ -127,6 +127,13 @@ module Rainbows
       after_fork.call(self, worker)
       worker.user(*user) if user.kind_of?(Array) && ! worker.switched
       build_app! unless preload_app
+
+      # avoid spurious wakeups and blocking-accept() with 1.8 green threads
+      if RUBY_VERSION.to_f < 1.9
+        require "io/nonblock"
+        HttpServer::LISTENERS.each { |l| l.nonblock = true }
+      end
+
       logger.info "Zbatery #@use worker_connections=#@worker_connections"
     end
   end
