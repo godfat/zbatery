@@ -125,6 +125,7 @@ module Rainbows
     # master == worker in our case
     def init_worker_process(worker)
       after_fork.call(self, worker)
+      worker.user(*user) if user.kind_of?(Array) && ! worker.switched
       build_app! unless preload_app
       logger.info "Zbatery #@use worker_connections=#@worker_connections"
     end
