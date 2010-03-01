@@ -124,5 +124,5 @@ if $DEBUG
   })
 end
 
-Unicorn::Launcher.daemonize! if daemonize
+Unicorn::Launcher.daemonize!(options) if daemonize
 Zbatery.run(app, options)

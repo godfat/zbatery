@@ -96,6 +96,13 @@ module Zbatery
       rescue => e # hopefully ignores errors on Win32...
         logger.error "failed to setup signal handler: #{e.message}"
       end
+
+      if ready_pipe
+        ready_pipe.syswrite($$.to_s)
+        ready_pipe.close rescue nil
+        self.ready_pipe = nil
+      end
+
       worker = Worker.new(0, DeadIO.new)
       before_fork.call(self, worker)
       worker_loop(worker) # runs forever
