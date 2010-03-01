@@ -60,6 +60,7 @@ module Zbatery
 
     # no-op
     def maintain_worker_count; end
+    def init_self_pipe!; end
 
     # can't just do a graceful exit if reopening logs fails, so we just
     # continue on...
@@ -69,6 +70,10 @@ module Zbatery
       logger.info "done reopening logs"
       rescue => e
         logger.error "failed reopening logs #{e.message}"
+    end
+
+    def trap_deferred(sig)
+      # nothing
     end
 
     def join
