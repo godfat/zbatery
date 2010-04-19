@@ -50,11 +50,11 @@ Gem::Specification.new do |s|
   #   espace-neverblock + eventmachine
   #   async_sinatra + sinatra + eventmachine
   #
-  # rainbows 0.90.2 depends on unicorn 0.96.1,
-  # unicorn 0.96.0 and before had a memory leak
-  # that was only triggered in Rainbows!/Zbatery
-  s.add_dependency(%q<unicorn>, ["~> 0.97.0"])
-  s.add_dependency(%q<rainbows>, [">= 0.91.0", "<= 1.0.0"])
+  # rainbows 0.91.1 depends on unicorn ~> 0.97.1, previous versions of
+  # Unicorn were vulnerable to a remote DoS when exposed directly to
+  # untrusted clients (a configuration only supported by Zbatery and Rainbows!,
+  # Unicorn has never and will never be supported without trusted LAN clients.
+  s.add_dependency(%q<rainbows>, [">= 0.91.1", "<= 1.0.0"])
 
   # s.licenses = %w(GPLv2 Ruby) # accessor not compatible with older RubyGems
 end
