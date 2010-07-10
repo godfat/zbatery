@@ -34,13 +34,13 @@ Gem::Specification.new do |s|
   s.files = manifest
   s.homepage = %q{http://zbatery.bogomip.org/}
   s.summary = %q{Rack HTTP server without a fork stuck in it}
-  s.rdoc_options = [ "-Na", "-t", "Zbatery - #{s.summary}" ]
+  s.rdoc_options = [ "-t", "Zbatery - #{s.summary}" ]
   s.require_paths = %w(lib)
   s.rubyforge_project = %q{rainbows}
 
   s.test_files = test_files
 
-  # rainbows has a boatload of dependencies
+  # rainbows has a boatload of optional dependencies
   # required:
   #   unicorn + rack
   # optional:
