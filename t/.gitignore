@@ -1,4 +1,6 @@
 /test-results-*
-/test-bin-*
+/bin-*
 /random_blob
 /.dep+*
+/trash
+/tmp

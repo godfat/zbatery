@@ -3,6 +3,12 @@
 . ./my-tap-lib.sh
 
 set +u
+
+# sometimes we rely on http_proxy to avoid wasting bandwidth with Isolate
+# and multiple Ruby versions
+NO_PROXY=${UNICORN_TEST_ADDR-127.0.0.1}
+export NO_PROXY
+
 if test -z "$model"
 then
 	# defaulting to Base would unfortunately fail some concurrency tests
@@ -13,23 +19,13 @@ fi
 set -e
 RUBY="${RUBY-ruby}"
 RUBY_VERSION=${RUBY_VERSION-$($RUBY -e 'puts RUBY_VERSION')}
-t_pfx=$PWD/trash/$model.$T-$RUBY_VERSION
+t_pfx=$PWD/trash/$model.$T-$RUBY_ENGINE-$RUBY_VERSION
 set -u
 
 PATH=$PWD/bin:$PATH
 export PATH
 
 test -x $PWD/bin/unused_listen || die "must be run in 't' directory"
-
-wait_for_pid () {
-	path="$1"
-	nr=30
-	while ! test -s "$path" && test $nr -gt 0
-	do
-		nr=$(($nr - 1))
-		sleep 1
-	done
-}
 
 # requires $1 and prints out the value of $2
 require_check () {
@@ -41,6 +37,19 @@ require_check () {
 		exit 0
 	fi
 }
+
+skip_models () {
+	for i in "$@"
+	do
+		if test x"$model" != x"$i"
+		then
+			continue
+		fi
+		t_info "skipping $T since it is not compatible with $model"
+		exit 0
+	done
+}
+
 
 # given a list of variable names, create temporary files and assign
 # the pathnames to those variables
@@ -113,6 +122,7 @@ EOF
 		# boxes and sometimes sleep 1s in tests
 		kato=5
 		echo 'Rainbows! do'
+		echo "  client_max_body_size nil"
 		if test $# -ge 1
 		then
 			echo "  use :$1"
@@ -145,7 +155,22 @@ rsha1 () {
 
 	# last resort, see comments in sha1sum.rb for reasoning
 	test -n "$_cmd" || _cmd=sha1sum.rb
-	expr "$($_cmd < random_blob)" : '\([a-f0-9]\{40\}\)'
+	expr "$($_cmd)" : '\([a-f0-9]\{40\}\)'
+}
+
+req_curl_chunked_upload_err_check () {
+	set +e
+	curl --version 2>/dev/null | awk '$1 == "curl" {
+		split($2, v, /\./)
+		if ((v[1] < 7) || (v[1] == 7 && v[2] < 18))
+			code = 1
+	}
+	END { exit(code) }'
+	if test $? -ne 0
+	then
+		t_info "curl >= 7.18.0 required for $T"
+		exit 0
+	fi
 }
 
 case $model in

@@ -1,4 +1,5 @@
 # -*- encoding: binary -*-
+# :enddoc:
 require 'rainbows'
 
 module Zbatery
@@ -11,7 +12,7 @@ module Zbatery
     # runs the Zbatery HttpServer with +app+ and +options+ and does
     # not return until the server has exited.
     def run(app, options = {})
-      HttpServer.new(app, options).start.join
+      Rainbows::HttpServer.new(app, options).start.join
     end
   end
 
@@ -32,7 +33,37 @@ module Zbatery
   # config files...
   FORK_HOOK = lambda { |_,_| }
 
-  class HttpServer < Rainbows::HttpServer
+end
+
+# :stopdoc:
+# override stuff we don't need or can't use portably
+module Rainbows
+
+  module Base
+    # master == worker in our case
+    def init_worker_process(worker)
+      after_fork.call(self, worker)
+      worker.user(*user) if user.kind_of?(Array) && ! worker.switched
+      build_app! unless preload_app
+      Rainbows::Response.setup(self.class)
+      Rainbows::MaxBody.setup
+
+      # avoid spurious wakeups and blocking-accept() with 1.8 green threads
+      if RUBY_VERSION.to_f < 1.9
+        require "io/nonblock"
+        HttpServer::LISTENERS.each { |l| l.nonblock = true }
+      end
+
+      logger.info "Zbatery #@use worker_connections=#@worker_connections"
+    end
+  end
+
+  # we can't/don't need to do the fchmod heartbeat Unicorn/Rainbows! does
+  def G.tick
+    alive
+  end
+
+  class HttpServer
 
     # this class is only used to avoid breaking Unicorn user switching
     class DeadIO
@@ -115,44 +146,17 @@ module Zbatery
 
     def before_fork
       hook = super
-      hook == FORK_HOOK or
+      hook == Zbatery::FORK_HOOK or
         logger.warn "calling before_fork without forking"
       hook
     end
 
     def after_fork
       hook = super
-      hook == FORK_HOOK or
+      hook == Zbatery::FORK_HOOK or
         logger.warn "calling after_fork without having forked"
       hook
     end
-  end
-end
-
-# :stopdoc:
-# override stuff we don't need or can't use portably
-module Rainbows
-
-  module Base
-    # master == worker in our case
-    def init_worker_process(worker)
-      after_fork.call(self, worker)
-      worker.user(*user) if user.kind_of?(Array) && ! worker.switched
-      build_app! unless preload_app
-
-      # avoid spurious wakeups and blocking-accept() with 1.8 green threads
-      if RUBY_VERSION.to_f < 1.9
-        require "io/nonblock"
-        HttpServer::LISTENERS.each { |l| l.nonblock = true }
-      end
-
-      logger.info "Zbatery #@use worker_connections=#@worker_connections"
-    end
-  end
-
-  # we can't/don't need to do the fchmod heartbeat Unicorn/Rainbows! does
-  def G.tick
-    alive
   end
 end
 

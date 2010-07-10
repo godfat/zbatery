@@ -1,4 +1,5 @@
 # -*- encoding: binary -*-
+autoload :Gem, 'rubygems'
 
 # most tasks are in the GNUmakefile which offers better parallelism
 
@@ -89,8 +90,6 @@ end
 
 desc "print release notes for Rubyforge"
 task :release_notes do
-  require 'rubygems'
-
   spec = Gem::Specification.load('zbatery.gemspec')
   puts spec.description.strip
   puts ""
@@ -121,7 +120,6 @@ end
 
 desc "post to RAA"
 task :raa_update do
-  require 'rubygems'
   require 'net/http'
   require 'net/netrc'
   rc = Net::Netrc.locate('zbatery-raa') or abort "~/.netrc not found"
@@ -155,4 +153,33 @@ task :raa_update do
   res = Net::HTTP.post_form(uri, form)
   p res
   puts res.body
+end
+
+desc "post to FM"
+task :fm_update do
+  require 'tempfile'
+  require 'net/http'
+  require 'net/netrc'
+  require 'json'
+  version = ENV['VERSION'] or abort "VERSION= needed"
+  uri = URI.parse('http://freshmeat.net/projects/zbatery/releases.json')
+  rc = Net::Netrc.locate('zbatery-fm') or abort "~/.netrc not found"
+  api_token = rc.password
+  changelog = tags.find { |t| t[:tag] == "v#{version}" }[:body]
+  tmp = Tempfile.new('fm-changelog')
+  tmp.syswrite(changelog)
+  system(ENV["VISUAL"], tmp.path) or abort "#{ENV["VISUAL"]} failed: #$?"
+  changelog = File.read(tmp.path).strip
+
+  req = {
+    "auth_code" => api_token,
+    "release" => {
+      "tag_list" => "Stable",
+      "version" => version,
+      "changelog" => changelog,
+    },
+  }.to_json
+  Net::HTTP.start(uri.host, uri.port) do |http|
+    p http.post(uri.path, req, {'Content-Type'=>'application/json'})
+  end
 end

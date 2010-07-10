@@ -54,7 +54,8 @@ Gem::Specification.new do |s|
   # Unicorn were vulnerable to a remote DoS when exposed directly to
   # untrusted clients (a configuration only supported by Zbatery and Rainbows!,
   # Unicorn has never and will never be supported without trusted LAN clients.
-  s.add_dependency(%q<rainbows>, [">= 0.91.1", "<= 1.0.0"])
+  s.add_dependency(%q<rainbows>, [">= 0.95.0", "<= 1.0.0"])
+  s.add_development_dependency(%q<isolate>, "~> 2.1.0")
 
   # s.licenses = %w(GPLv2 Ruby) # accessor not compatible with older RubyGems
 end
