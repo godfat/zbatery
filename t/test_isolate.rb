@@ -14,9 +14,9 @@ old_out = $stdout.dup
 $stdout.reopen($stderr)
 
 Isolate.now!(opts) do
-  gem 'rack', '1.1.0'
-  gem 'unicorn', '1.1.3'
-  gem 'rainbows', '0.97.0'
+  gem 'rack', '1.2.1'
+  gem 'unicorn', '2.0.0'
+  gem 'rainbows', '1.0.0'
 
   if engine == "ruby"
     gem 'sendfile', '1.0.0' # next Rubinius should support this
@@ -29,7 +29,6 @@ Isolate.now!(opts) do
     gem 'async_sinatra', '0.2.1'
 
     gem 'neverblock', '0.1.6.2'
-    gem 'cramp', '0.11'
   end
 
   if defined?(::Fiber) && engine == "ruby"

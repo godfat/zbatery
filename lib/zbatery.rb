@@ -18,21 +18,10 @@ module Zbatery
 
   Rainbows::Const::RACK_DEFAULTS["SERVER_SOFTWARE"] = "Zbatery #{VERSION}"
 
-  # true if our Ruby implementation supports unlinked files
-  UnlinkedIO = begin
-    tmp = Unicorn::Util.tmpio
-    tmp.chmod(0)
-    tmp.close
-    true
-  rescue
-    false
-  end
-
   # we don't actually fork workers, but allow using the
   # {before,after}_fork hooks found in Unicorn/Rainbows!
   # config files...
   FORK_HOOK = lambda { |_,_| }
-
 end
 
 # :stopdoc:
@@ -47,12 +36,7 @@ module Rainbows
       build_app! unless preload_app
       Rainbows::Response.setup(self.class)
       Rainbows::MaxBody.setup
-
-      # avoid spurious wakeups and blocking-accept() with 1.8 green threads
-      if RUBY_VERSION.to_f < 1.9
-        require "io/nonblock"
-        HttpServer::LISTENERS.each { |l| l.nonblock = true }
-      end
+      Rainbows::ProcessClient.const_set(:APP, @app)
 
       logger.info "Zbatery #@use worker_connections=#@worker_connections"
     end
@@ -68,6 +52,7 @@ module Rainbows
     # this class is only used to avoid breaking Unicorn user switching
     class DeadIO
       def chown(*args); end
+      alias fcntl chown
     end
 
     # only used if no concurrency model is specified
@@ -75,11 +60,8 @@ module Rainbows
       init_worker_process(worker)
       begin
         ret = IO.select(LISTENERS, nil, nil, nil) and
-        ret.first.each do |sock|
-          begin
-            process_client(sock.accept_nonblock)
-          rescue Errno::EAGAIN, Errno::ECONNABORTED
-          end
+        ret[0].each do |sock|
+          io = sock.kgio_tryaccept and process_client(io)
         end
       rescue Errno::EINTR
       rescue Errno::EBADF, TypeError
@@ -108,32 +90,24 @@ module Rainbows
     end
 
     def join
-      begin
-        trap(:INT) { stop(false) } # Mongrel trapped INT for Win32...
+      trap(:INT) { stop(false) }
+      trap(:TERM) { stop(false) }
+      trap(:QUIT) { stop }
+      trap(:USR1) { reopen_logs }
+      trap(:USR2) { reexec }
+      trap(:HUP) { reexec; stop }
 
-        # try these anyways regardless of platform...
-        trap(:TERM) { stop(false) }
-        trap(:QUIT) { stop }
-        trap(:USR1) { reopen_logs }
-        trap(:USR2) { reexec }
-
-        # no other way to reliably switch concurrency models...
-        trap(:HUP) { reexec; stop }
-
-        # technically feasible in some cases, just not sanely supportable:
-        %w(TTIN TTOU WINCH).each do |sig|
-          trap(sig) { logger.info "SIG#{sig} is not handled by Zbatery" }
-        end
-      rescue => e # hopefully ignores errors on Win32...
-        logger.error "failed to setup signal handler: #{e.message}"
+      # technically feasible in some cases, just not sanely supportable:
+      %w(TTIN TTOU WINCH).each do |sig|
+        trap(sig) { logger.info "SIG#{sig} is not handled by Zbatery" }
       end
 
       if ready_pipe
         ready_pipe.syswrite($$.to_s)
-        ready_pipe.close rescue nil
+        ready_pipe.close
         self.ready_pipe = nil
       end
-
+      extend(Rainbows.const_get(@use))
       worker = Worker.new(0, DeadIO.new)
       before_fork.call(self, worker)
       worker_loop(worker) # runs forever
@@ -160,24 +134,5 @@ module Rainbows
   end
 end
 
-module Unicorn
-
-  class Configurator
-    DEFAULTS[:before_fork] = DEFAULTS[:after_fork] = Zbatery::FORK_HOOK
-  end
-
-  unless Zbatery::UnlinkedIO
-    require 'tempfile'
-    class Util
-
-      # Tempfiles should get automatically unlinked by GC
-      def self.tmpio
-        fp = Tempfile.new("zbatery")
-        fp.binmode
-        fp.sync = true
-        fp
-      end
-    end
-  end
-
-end
+Unicorn::Configurator::DEFAULTS[:before_fork] =
+  Unicorn::Configurator::DEFAULTS[:after_fork] = Zbatery::FORK_HOOK
