@@ -15,8 +15,8 @@ $stdout.reopen($stderr)
 
 Isolate.now!(opts) do
   gem 'rack', '1.2.1'
-  gem 'unicorn', '2.0.0'
-  gem 'rainbows', '1.0.0'
+  gem 'unicorn', '3.0.0'
+  gem 'rainbows', '2.0.0'
 
   if engine == "ruby"
     gem 'sendfile', '1.0.0' # next Rubinius should support this
