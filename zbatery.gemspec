@@ -50,7 +50,7 @@ Gem::Specification.new do |s|
   #   espace-neverblock + eventmachine
   #   async_sinatra + sinatra + eventmachine
   #
-  s.add_dependency(%q<rainbows>, ["~> 2.0.0"])
+  s.add_dependency(%q<rainbows>, ["~> 2.1"])
   s.add_development_dependency(%q<isolate>, "~> 3.0.0")
 
   # s.licenses = %w(GPLv2 Ruby) # accessor not compatible with older RubyGems

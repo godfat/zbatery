@@ -36,6 +36,7 @@ module Rainbows
       build_app! unless preload_app
       Rainbows::Response.setup(self.class)
       Rainbows::MaxBody.setup
+      Rainbows::RackInput.setup
       Rainbows::ProcessClient.const_set(:APP, @app)
 
       logger.info "Zbatery #@use worker_connections=#@worker_connections"

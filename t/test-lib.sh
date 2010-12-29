@@ -126,7 +126,7 @@ EOF
 		if test $# -ge 1
 		then
 			echo "  use :$1"
-			test $# -eq 2 && echo "  worker_connections $2"
+			test $# -ge 2 && echo "  worker_connections $2"
 			if test $# -eq 3
 			then
 				echo "  keepalive_timeout $3"
@@ -175,6 +175,7 @@ req_curl_chunked_upload_err_check () {
 
 case $model in
 Rev) require_check rev Rev::VERSION ;;
+Coolio) require_check coolio Coolio::VERSION ;;
 Revactor) require_check revactor Revactor::VERSION ;;
 EventMachine) require_check eventmachine EventMachine::VERSION ;;
 esac
