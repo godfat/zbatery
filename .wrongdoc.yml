@@ -1,0 +1,7 @@
+---
+cgit_url: http://git.bogomips.org/cgit/zbatery.git
+git_url: git://git.bogomips.org/zbatery.git
+rdoc_url: http://zbatery.bogomip.org/
+changelog_start: v0.3.1
+merge_html:
+  zbatery_1: Documentation/zbatery.1.html
