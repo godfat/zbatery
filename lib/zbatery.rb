@@ -4,8 +4,8 @@ require 'rainbows'
 
 module Zbatery
 
-  # version of Zbatery, currently 0.5.0
-  VERSION = "0.5.0"
+  # version of Zbatery, currently 0.6.0
+  VERSION = "0.6.0"
 
   class << self
 
