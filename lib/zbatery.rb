@@ -4,8 +4,8 @@ require 'rainbows'
 
 module Zbatery
 
-  # version of Zbatery, currently 0.6.0
-  VERSION = "0.6.0"
+  # version of Zbatery, currently 3.0.0
+  VERSION = "3.0.0"
 
   class << self
 
@@ -44,7 +44,7 @@ module Rainbows
   end
 
   # we can't/don't need to do the fchmod heartbeat Unicorn/Rainbows! does
-  def G.tick
+  def self.tick
     alive
   end
 
@@ -69,7 +69,7 @@ module Rainbows
         break
       rescue => e
         Rainbows::Error.listen_loop(e)
-      end while G.alive
+      end while Rainbows.alive
     end
 
     # no-op
@@ -115,7 +115,7 @@ module Rainbows
     end
 
     def stop(graceful = true)
-      Rainbows::G.quit!
+      Rainbows.quit!
       exit!(0) unless graceful
     end
 
