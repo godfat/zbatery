@@ -1,8 +1,8 @@
 # -*- encoding: binary -*-
 autoload :Gem, 'rubygems'
 
-cgit_url = "http://git.bogomips.org/cgit/rainbows.git"
-git_url = 'git://git.bogomips.org/rainbows.git'
+cgit_url = "http://bogomips.org/zbatery.git"
+git_url = 'git://bogomips.org/zbatery.git'
 
 desc "read news article from STDIN and post to rubyforge"
 task :publish_news do
