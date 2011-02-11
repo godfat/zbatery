@@ -3,7 +3,6 @@ RSYNC_DEST := zbatery.bogomip.org:/srv/zbatery
 rfproject := rainbows
 rfpackage := zbatery
 man-rdoc: man html
-	$(MAKE) -C Documentation comparison.html
 	for i in $(man1_rdoc); do echo > $$i; done
 doc:: man-rdoc
 include pkg.mk
