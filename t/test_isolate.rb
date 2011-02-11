@@ -14,7 +14,7 @@ old_out = $stdout.dup
 $stdout.reopen($stderr)
 
 Isolate.now!(opts) do
-  gem 'rainbows', '3.0.0'
+  gem 'rainbows', '3.1.0'
 
   if engine == "ruby"
     gem 'sendfile', '1.0.0' # next Rubinius should support this
