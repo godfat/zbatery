@@ -19,6 +19,12 @@ endif
 RUBY_ENGINE := $(shell $(RUBY) -e 'puts((RUBY_ENGINE rescue "ruby"))')
 export RUBY_VERSION RUBY_ENGINE
 
+ifeq (Linux,$(shell uname -s))
+  models += XEpoll
+  models += XEpollThreadSpawn
+  models += XEpollThreadPool
+  models += Epoll
+endif
 models += WriterThreadPool
 models += WriterThreadSpawn
 models += ThreadPool

@@ -14,25 +14,30 @@ old_out = $stdout.dup
 $stdout.reopen($stderr)
 
 Isolate.now!(opts) do
-  gem 'rainbows', '3.1.0'
+  gem 'rainbows', '3.3.0'
+  gem 'raindrops', '0.6.1'
 
   if engine == "ruby"
-    gem 'sendfile', '1.0.0' # next Rubinius should support this
-
-    gem 'iobuffer', '0.1.3'
+    gem 'sendfile', '1.1.0' # next Rubinius should support this
     gem 'cool.io', '1.0.0'
 
     gem 'eventmachine', '0.12.10'
-    gem 'sinatra', '1.0.0'
-    gem 'async_sinatra', '0.2.1'
+    gem 'sinatra', '1.2.0'
+    gem 'async_sinatra', '0.5.0'
 
     gem 'neverblock', '0.1.6.2'
   end
 
   if defined?(::Fiber) && engine == "ruby"
-    gem 'case', '0.5'
     gem 'revactor', '0.1.5'
     gem 'rack-fiber_pool', '0.9.0'
+  end
+
+  if RUBY_PLATFORM =~ /linux/
+    gem 'sleepy_penguin', '2.0.0'
+
+    # is 2.6.32 new enough?
+    gem 'io_splice', '4.1.0' if `uname -r`.strip > '2.6.32'
   end
 end
 

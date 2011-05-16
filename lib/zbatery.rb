@@ -1,10 +1,10 @@
 # -*- encoding: binary -*-
 # :enddoc:
 require 'rainbows'
-
+Rainbows.forked = true
 module Zbatery
 
-  VERSION = "3.1.0"
+  VERSION = "3.3.0"
 
   class << self
 
