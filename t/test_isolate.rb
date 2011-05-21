@@ -14,7 +14,7 @@ old_out = $stdout.dup
 $stdout.reopen($stderr)
 
 Isolate.now!(opts) do
-  gem 'rainbows', '3.3.0'
+  gem 'rainbows', '3.4.0'
   gem 'raindrops', '0.6.1'
 
   if engine == "ruby"
@@ -34,10 +34,10 @@ Isolate.now!(opts) do
   end
 
   if RUBY_PLATFORM =~ /linux/
-    gem 'sleepy_penguin', '2.0.0'
+    gem 'sleepy_penguin', '3.0.0'
 
     # is 2.6.32 new enough?
-    gem 'io_splice', '4.1.0' if `uname -r`.strip > '2.6.32'
+    gem 'io_splice', '4.1.1' if `uname -r`.strip > '2.6.32'
   end
 end
 
