@@ -118,4 +118,4 @@ if $DEBUG
 end
 
 Unicorn::Launcher.daemonize!(options) if rackup_opts[:daemonize]
-Zbatery.run(app, options)
+Rainbows::HttpServer.new(app, options).start.join

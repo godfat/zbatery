@@ -6,15 +6,6 @@ module Zbatery
 
   VERSION = "3.4.0"
 
-  class << self
-
-    # runs the Zbatery HttpServer with +app+ and +options+ and does
-    # not return until the server has exited.
-    def run(app, options = {})
-      Rainbows::HttpServer.new(app, options).start.join
-    end
-  end
-
   Rainbows::Const::RACK_DEFAULTS["SERVER_SOFTWARE"] = "Zbatery #{VERSION}"
 
   # we don't actually fork workers, but allow using the
