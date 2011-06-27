@@ -33,7 +33,7 @@ module Rainbows
       after_fork.call(self, worker)
       worker.user(*user) if user.kind_of?(Array) && ! worker.switched
       build_app! unless preload_app
-      Rainbows::Response.setup(self.class)
+      Rainbows::Response.setup
       Rainbows::MaxBody.setup
       Rainbows::ProcessClient.const_set(:APP, @app)
 
@@ -72,6 +72,7 @@ module Rainbows
 
     # no-op
     def maintain_worker_count; end
+    def spawn_missing_workers; end
     def init_self_pipe!; end
 
     # can't just do a graceful exit if reopening logs fails, so we just
@@ -107,7 +108,7 @@ module Rainbows
         self.ready_pipe = nil
       end
       extend(Rainbows.const_get(@use))
-      worker = Worker.new(0, DeadIO.new)
+      worker = Worker.new(0)
       before_fork.call(self, worker)
       worker_loop(worker) # runs forever
     end
