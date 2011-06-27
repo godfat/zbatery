@@ -39,12 +39,6 @@ module Rainbows
 
   class HttpServer
 
-    # this class is only used to avoid breaking Unicorn user switching
-    class DeadIO
-      def chown(*args); end
-      alias fcntl chown
-    end
-
     # only used if no concurrency model is specified
     def worker_loop(worker)
       init_worker_process(worker)
