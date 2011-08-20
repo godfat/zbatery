@@ -24,13 +24,7 @@ for basic functionality.
 * Inherits all features and concurrency models Rainbows! supports
   (and ever will support): http://rainbows.rubyforge.org/Summary.html
 
-* -Untested- Works under operating systems that don't support signals,
-  pipe and fork().  Unicorn 0.95.2+ has rake-compiler support, so
-  compiling the HTTP parser should be easier at least.
-
-* Web Sockets support (via
-  {Sunshowers}[http://rainbows.rubyforge.org/sunshowers/]), requires
-  Rainbows! 0.9.0+
+* Web Sockets support (via {Cramp}[http://cramp.in/])
 
 == License
 
@@ -47,7 +41,7 @@ and run setup.rb after unpacking it (and installing Unicorn and Rainbows!):
 
 http://rubyforge.org/frs/?group_id=8977
 
-You may also install it via RubyGems on Gemcutter:
+You may also install it via RubyGems on RubyGems.org:
 
   gem install zbatery
 
@@ -77,21 +71,18 @@ as well as the "Rainbows!" block, so you can have the following in your
 config file:
 
     Rainbows! do
-      use :FiberSpawn
-      worker_connections 400
+      use :ThreadSpawn
+      worker_connections 666
     end
 
 See the Rainbows! configuration
-{documentation}[http://rainbows.rubyforge.org/Rainbows.html#M000001]
+{documentation}[http://rainbows.rubyforge.org/Rainbows/Configurator.html]
 for more details.
 
 == Disclaimer
 
 There is NO WARRANTY whatsoever if anything goes wrong, but let us know
 and we'll try our best to fix it.
-
-This project may be temporary and may eventually have its name encoded
-with uncrackable ROT13 encryption leaving you with no way to upgrade.
 
 == Development
 
