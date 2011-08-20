@@ -5,3 +5,5 @@ rdoc_url: http://zbatery.bogomip.org/
 changelog_start: v0.3.1
 merge_html:
   zbatery_1: Documentation/zbatery.1.html
+public_email: rainbows-talk@rubyforge.org
+private_email: rainbows@bogomips.org

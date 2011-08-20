@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
   #   async_sinatra + sinatra + eventmachine
   #
   s.add_dependency(%q<rainbows>, ["~> 4.0"])
-  s.add_development_dependency(%q<wrongdoc>, "~> 1.5")
+  s.add_development_dependency(%q<wrongdoc>, "~> 1.6")
   s.add_development_dependency(%q<isolate>, "~> 3.1")
 
   # s.licenses = %w(GPLv2 Ruby) # accessor not compatible with older RubyGems
