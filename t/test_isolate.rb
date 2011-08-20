@@ -14,12 +14,14 @@ old_out = $stdout.dup
 $stdout.reopen($stderr)
 
 Isolate.now!(opts) do
-  gem 'rainbows', '4.0.0'
+  gem 'kgio', '2.6.0'
+  gem 'kcar', '0.3.0'
+  gem 'rainbows', '4.3.0'
   gem 'raindrops', '0.7.0'
 
   if engine == "ruby"
-    gem 'sendfile', '1.1.0' # next Rubinius should support this
-    gem 'cool.io', '1.0.0'
+    gem 'sendfile', '1.1.0'
+    gem 'cool.io', '1.1.0'
 
     gem 'eventmachine', '0.12.10'
     gem 'sinatra', '1.2.0'
@@ -30,7 +32,7 @@ Isolate.now!(opts) do
 
   if defined?(::Fiber) && engine == "ruby"
     gem 'revactor', '0.1.5'
-    gem 'rack-fiber_pool', '0.9.0'
+    gem 'rack-fiber_pool', '0.9.1'
   end
 
   if RUBY_PLATFORM =~ /linux/
