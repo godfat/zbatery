@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   #   espace-neverblock + eventmachine
   #   async_sinatra + sinatra + eventmachine
   #
-  s.add_dependency(%q<rainbows>, ["~> 4.0"])
+  s.add_dependency(%q<rainbows>, ["~> 4.3"])
   s.add_development_dependency(%q<wrongdoc>, "~> 1.6")
   s.add_development_dependency(%q<isolate>, "~> 3.1")
 
