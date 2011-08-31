@@ -75,16 +75,18 @@ module Rainbows
     end
 
     def join
-      trap(:INT) { stop(false) }
-      trap(:TERM) { stop(false) }
-      trap(:QUIT) { stop }
-      trap(:USR1) { reopen_logs }
-      trap(:USR2) { reexec }
-      trap(:HUP) { reexec; stop }
+      trap(:INT) { exit!(0) }
+      trap(:TERM) { exit!(0) }
+      trap(:QUIT) { Thread.new { stop } }
+      trap(:USR1) { Thread.new { reopen_logs } }
+      trap(:USR2) { Thread.new { reexec } }
+      trap(:HUP) { Thread.new { reexec; stop } }
 
       # technically feasible in some cases, just not sanely supportable:
       %w(TTIN TTOU WINCH).each do |sig|
-        trap(sig) { logger.info "SIG#{sig} is not handled by Zbatery" }
+        trap(sig) do
+          Thread.new { logger.info("SIG#{sig} is not handled by Zbatery") }
+        end
       end
 
       if ready_pipe
