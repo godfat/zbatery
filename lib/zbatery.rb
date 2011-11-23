@@ -75,6 +75,7 @@ module Rainbows
     end
 
     def join
+      at_exit { unlink_pid_safe(pid) if pid }
       trap(:INT) { exit!(0) }
       trap(:TERM) { exit!(0) }
       trap(:QUIT) { Thread.new { stop } }
@@ -102,7 +103,7 @@ module Rainbows
 
     def stop(graceful = true)
       Rainbows.quit!
-      exit!(0) unless graceful
+      graceful ? exit : exit!(0)
     end
 
     def before_fork

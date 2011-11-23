@@ -3,7 +3,7 @@
 nr_client=${nr_client-2}
 . ./test-lib.sh
 
-t_plan 19 "reopen rotated logs"
+t_plan 20 "reopen rotated logs"
 
 t_begin "setup and startup" && {
 	rtmpfiles curl_out curl_err r_rot
@@ -96,7 +96,20 @@ t_begin "server is now writing logs to new stderr" && {
 }
 
 t_begin "stop server" && {
-	kill $zbatery_pid
+	kill -QUIT $zbatery_pid
+}
+
+t_begin "wait and ensure pid file no longer exists" && {
+	max=0
+	while test $max -lt 60 && kill -0 $zbatery_pid 2>/dev/null
+	do
+		sleep 1
+		max=$(($max + 1))
+	done
+	if test -f "$pid"
+	then
+		die "$pid should be unlinked at shutdown"
+	fi
 }
 
 dbgcat r_err
