@@ -82,6 +82,7 @@ module Rainbows
       trap(:USR1) { Thread.new { reopen_logs } }
       trap(:USR2) { Thread.new { reexec } }
       trap(:HUP) { Thread.new { reexec; stop } }
+      trap(:CHLD, "DEFAULT")
 
       # technically feasible in some cases, just not sanely supportable:
       %w(TTIN TTOU WINCH).each do |sig|
