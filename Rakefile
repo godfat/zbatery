@@ -77,7 +77,7 @@ task :fm_update do
   require 'net/netrc'
   require 'json'
   version = ENV['VERSION'] or abort "VERSION= needed"
-  uri = URI.parse('http://freshmeat.net/projects/zbatery/releases.json')
+  uri = URI.parse('http://freecode.com/projects/zbatery/releases.json')
   rc = Net::Netrc.locate('zbatery-fm') or abort "~/.netrc not found"
   api_token = rc.password
   _, subject, body = `git cat-file tag v#{version}`.split(/\n\n/, 3)
